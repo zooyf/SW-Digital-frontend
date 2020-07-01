@@ -29,6 +29,12 @@
 
 实现下面的功能、样式，点击图片可查看视频演示。
 
+#### 完成度
+
+* 1：实现基本布局
+* 2：实现联动锚点
+* 3：全部实现
+
 [![IMAGE ALT TEXT HERE](https://sw-interview.oss-cn-beijing.aliyuncs.com/videos/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202020-06-30%2011.34.50.png)](https://sw-interview.oss-cn-beijing.aliyuncs.com/videos/frontend.mp4)
 
 ### 考评点
@@ -36,12 +42,6 @@
 * 完成度
 * 代码质量
 * 表达能力
-
-#### 完成度
-
-* 1：实现基本布局
-* 2：实现联动锚点
-* 3：全部实现
 
 ## End
 
