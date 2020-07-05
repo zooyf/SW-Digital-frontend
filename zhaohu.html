@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>index.js</title>
+</head>
+<style type="text/css">
+	*{
+		margin:0;padding:0;
+	}
+	.wrapper {
+		background:#f2f2f2;
+		overflow:hidden;
+	}
+	.header {
+		width:100%;
+		height:50px;
+		background:#f5f5f5;
+		border-bottom:1px solid black;
+	}
+	.contion {
+		display:flex;
+		flex-direction:row;
+	}
+	.contion .contion-icon {width:50px; height:calc(100vh - 60px);background:skyblue;}
+	.contion .contion-menu {width:200px;background:#fff;position:fixed;left:50px;top:51px;height:calc(100vh - 100px);}
+	.contion .contion-menu .menu-content-item {padding:12px 24px;background:#998;color:#333;cursor:pointer;}
+	.contion .contion-menu .menu-content-item:hover{background:#3f8cff;}
+	.contion .contion-menu .active {background:#3f8cff;}
+	.contion-content {flex:1;padding:24px;margin-left:200px;height:calc(100vh - 100px);overflow-y:scroll;}
+	.contion-content-item {width:100%;margin-top:24px;}
+	.contion-content-item .item-title {line-height:28px;text-indent:1em;}
+	.contion-content-item .item-content{height:200px;background:#fff;}
+
+</style>
+<body>
+	<div class="wrapper">
+		<!-- header -->
+		<div class="header">headerContent</div>
+
+		<div class="contion">
+			<div class='contion-icon'></div>
+			<!-- leftMenu -->
+			<div class="contion-menu">
+				<div class="menu-content">
+					<h2>产能统计指标</h2>
+					<div class="menu-content-list">
+						<!-- <p class="menu-content-item">装机容量-万千瓦1</p> -->
+					</div>
+					<!-- <h2>主要业务指标</h2>
+					<div class="menu-content-list">
+						<p class="menu-content-item">装机容量-万千瓦1</p>
+					</div> -->
+				</div>
+			</div>
+
+			<!-- rightContent -->
+			<div class="contion-content">
+				<!-- <div class="contion-content-item">
+					<p class="item-title">1234</p>
+					<div class="item-content"></div>
+				</div> -->
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		let currentIndex = 0
+		let list = getMenuList(['装机容量-万千瓦'])
+		let menu = [
+				{
+					title: '产能统计指标', 
+					list: ['装机容量-万千瓦']
+				}, 
+				{
+					title: '详细业务指标',
+					list: ['发电量']
+				}
+			]
+		let scrollItemHeight = 228
+		let scrollTop = scrollItemHeight * currentIndex
+		let scrollList = []
+
+		// initMenu()
+		function initMenu () {
+			menu[0].list = getMenuList(menu[0].list)
+			menu[1].list = getMenuList(menu[1].list)
+			let contionMenu = document.getElementsByClassName('contion-menu')[0]
+			let str = ''
+			menu.forEach((item, index) => {
+				str += `<h2>${item.title}</h2>`
+				str += getMenu(item.title, item.list)
+			})
+			contionMenu.innerHTML = str
+		}
+
+
+
+		function getMenu (parentId, list) {
+			let str = '<div class="menu-content-list">'
+			list.forEach((item, index) => {
+				str+= `<p class="menu-content-item" :data-id="${index}" :data-parent="${parentId}">${item}</p>`
+			})
+			return str +'</div>'
+		}
+
+		
+		init()
+
+		function init () {
+			setMenuItemString(list, currentIndex)
+			setRightContent(list)
+		}
+
+		let rightContent = document.getElementsByClassName('contion-content')[0]
+		rightContent.addEventListener('scroll', (ev) => {
+			scrollTop = ev.target.scrollTop
+			addClassName(setScrollMenuActive(scrollTop))
+		})
+
+		function setScrollMenuActive (scrollTop) {
+			let activeIndex = currentIndex
+			const len = scrollList.length
+			for (let i = 0; i < len; i++) {
+				if (scrollTop >= scrollList[i] && scrollTop <= scrollList[i + 1]){
+					activeIndex = i
+				}
+			}
+			return activeIndex
+		}
+		
+		
+		let menuContentItem = document.getElementsByClassName('menu-content-item')
+		for (var i = menuContentItem.length - 1; i >= 0; i--) {
+			menuContentItem[i].addEventListener('click', (ev) => {
+				let index = ev.target.attributes[1].value
+				// let parentId = ev.target.attributes[2].value
+				// console.log(parentId)
+				rightContent.scrollTop = index * scrollItemHeight
+				addClassName(index)
+			})
+		}
+
+		function addClassName (index) {
+			currentIndex = index
+			for (var i = menuContentItem.length - 1; i >= 0; i--) {
+				menuContentItem[i].className = 'menu-content-item'
+			}
+			menuContentItem[index].className = 'menu-content-item active'
+		}
+
+		function getMenuList (menuList) {
+			let list = []
+			for(let i = 0;i < 5 ;i++) {
+				list.push(menuList[0] + i)
+			}
+			return list
+		}
+
+		function setRightContent (list) {
+			let menuRightContent = document.getElementsByClassName('contion-content')[0]
+			let str = ''
+			list.forEach((item,index) => {
+				str+= `<div class="contion-content-item">
+								<p class="item-title">${item}</p>
+								<div class="item-content"></div>
+							</div>`
+				scrollList.push(index * scrollItemHeight)
+			})
+			console.log(scrollList)
+			menuRightContent.innerHTML = str
+		}
+
+		function setMenuItemString (list, currentIndex) {
+			let menuContent = document.getElementsByClassName('menu-content-list')[0]
+			let str = ''
+			list.forEach((item,index) => {
+				let className = index === currentIndex ? 'menu-content-item active' : 'menu-content-item'
+				str += `<p class="${className}" :data-id="${index}">${item}</p>`
+				// str += `<h2>产能统计指标</h2>
+				// 	<div class="menu-content-list">
+				// 		 <p class="${className}" :data-id="${index}">${item}</p>
+				// 	</div>`
+			})
+			menuContent.innerHTML = str
+		}
+
+
+
+
+
+	</script>
+</body>
+</html>
